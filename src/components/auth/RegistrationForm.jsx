@@ -1,57 +1,71 @@
-import React from "react";
 import Field from "../common/Field";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm = () => {
+export default function RegistrationForm() {
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
 
-  // Hook Form
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError
+    setError,
+    reset,
   } = useForm();
 
-  //   Handler
   const submitForm = async (formData) => {
+    console.log(formData);
     try {
-      // Make An API call
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_BASE_URL}/auth/login`,
+      let response = await axios.post(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/auth/register`,
         formData
       );
 
-      // Will return Tokens and Logged in user Information
-      if (response.status === 200) {
-        const { token, user } = response.data;
-
-        if (token) {
-          const authToken = token.token;
-          const refreshToken = token.refreshToken;
-          setAuth({ user, authToken, refreshToken });
-          navigate("/");
-        }
+      if (response.status === 201) {
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);
       setError("root.random", {
         type: "random",
-        message: `User with email ${formData.email} is not found`
-      })
+        message: `something went wrong: ${error.message} `,
+      });
     }
-    
+    reset();
   };
 
   return (
     <form
       onSubmit={handleSubmit(submitForm)}
-      className="border-b border-[#3F3F3F] pb-10 lg:pb-[60px]"
+      className="border-b border-[#3F3F3F] pb-10 lg:pb-[30px]"
     >
+      <Field label="First Name" error={errors.firstName}>
+        <input
+          {...register("firstName", { required: "First Name Is Required" })}
+          className={`auth-input ${
+            errors.firstName ? "border-red-500" : "border-gray-200"
+          }`}
+          type="text"
+          name="firstName"
+          id="firstName"
+          placeholder="Enter Your First Name"
+        />
+      </Field>
+
+      <Field label="Last Name" error={errors.lastName}>
+        <input
+          {...register("lastName")}
+          className={`auth-input ${
+            errors.lastName ? "border-red-500" : "border-gray-200"
+          }`}
+          type="text"
+          name="lastName"
+          id="lastName"
+          placeholder="Enter Your Last Name"
+        />
+      </Field>
+
       <Field label="Email" error={errors.email}>
         <input
           {...register("email", { required: "Email ID Is Required" })}
@@ -83,17 +97,17 @@ const LoginForm = () => {
           placeholder="Enter Your Password"
         />
       </Field>
-          <p className="my-3 text-red-400">{errors?.root?.random?.message}</p>
+
+      <p className="my-3 text-red-400">{errors?.root?.random?.message}</p>
+
       <Field>
         <button
           className="auth-input bg-lwsGreen font-bold text-deepDark transition-all hover:opacity-90"
           type="submit"
         >
-          Login
+          Register
         </button>
       </Field>
     </form>
   );
-};
-
-export default LoginForm;
+}

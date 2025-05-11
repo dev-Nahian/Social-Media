@@ -6,6 +6,7 @@ import notificationSvg from "../../assets/icons/notification.svg";
 import Logout from "../auth/Logout";
 import { useAuth } from "../../hooks/useAuth";
 import { useProfile } from "../../hooks/useProfile";
+import RandomImage from "../../assets/images/avatars/RANDOM.png"
 
 export default function Header() {
 
@@ -37,11 +38,20 @@ export default function Header() {
 
           <Link to="/me" className="flex-center !ml-8 gap-3">
             <span className="text-lg font-medium lg:text-xl">{user?.firstName} {''} {user?.lastName}</span>
-            <img
+            {user.avatar? (
+              <img
               className="h-[32px] w-[32px] lg:h-[44px] lg:w-[44px] rounded-full"
-              src={`${import.meta.env.VITE_SERVER_BASE_URL}/${user.avatar}`}
+              src={ `${import.meta.env.VITE_SERVER_BASE_URL}/${user.avatar}`}
               alt="not found"
             />
+            ) : (
+              <img
+              className="h-[32px] w-[32px] lg:h-[44px] lg:w-[44px] rounded-full"
+              src={ RandomImage}
+              alt="not found"
+            />
+            )}
+            
           </Link>
         </div>
       </div>

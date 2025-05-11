@@ -514,6 +514,23 @@
       "avatar": "uploads/avatar/avatar-1708802845791-219561000.png",
       "email": "rambo@email.com",
       "bio": "I am Rambo!!!"
+    },
+    {
+      "id": "6fffd554-d76e-4c58-9f28-2a14fdd7d44f",
+      "password": "$2b$08$oM102c6Sxa41xy/rNiURHuEDDEU6JtceyhUK6IAyXwwn3thDV1uWu",
+      "firstName": "Al",
+      "lastName": "Rafi",
+      "avatar": "uploads/avatar/avatar-1746960451456-512901062.jpeg",
+      "email": "alrafi321@icloud.com",
+      "bio": "Hi I am Nahian, Learning React"
+    },
+    {
+      "id": "bcd27392-0053-46bd-b7dc-af4a679f132e",
+      "password": "$2b$08$TqUQIRHEber6Or7LHdbAYuyltTdCfCD8jgDRl8wZnLnSkVZsfFc52",
+      "firstName": "ranbo",
+      "lastName": "samba",
+      "avatar": null,
+      "email": "ranbo@email.com"
     }
   ]
 }

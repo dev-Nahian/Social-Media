@@ -3,6 +3,7 @@ import editIcon from "../../assets/icons/edit.svg";
 import useAxios from "../../hooks/useAxios";
 import { useRef } from "react";
 import { actions } from "../../actions";
+import RandomImage from "../../assets/images/avatars/RANDOM.png"
 
 export default function ProfileImage() {
   const { state, dispatch } = useProfile();
@@ -33,11 +34,20 @@ export default function ProfileImage() {
 
   return (
     <div className="relative mb-8 h-[180px] w-[180px] rounded-full lg:mb-11 lg:h-[218px] lg:w-[218px]">
-      <img
+      {state?.user?.avatar ? (
+        <img
         className="h-full w-full object-cover rounded-full"
         src={`${import.meta.env.VITE_SERVER_BASE_URL}/${state?.user?.avatar}`}
         alt={state?.user?.firstName}
       />
+      ) : (
+        <img
+        className="h-full w-full object-cover rounded-full"
+        src={RandomImage}
+        alt={state?.user?.firstName}
+        />
+      )}
+      
 
       <button
         type="button"
