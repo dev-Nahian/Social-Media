@@ -7,7 +7,7 @@ import { usePost } from "../../hooks/usePost";
 import AddPhoto from "../../assets/icons/addPhoto.svg";
 import Field from "../common/Field";
 
-export default function PostEntry() {
+export default function PostEntry({onCreate}) {
   const { auth } = useAuth();
   const { dispatch } = usePost();
   const { api } = useAxios();
@@ -19,12 +19,30 @@ export default function PostEntry() {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm();
 
-  const handlePostSubmit = (formData) => {
+  const handlePostSubmit = async (formData) => {
     console.log(formData);
-    dispatch({type: actions.post.DATA_FETCHING})
+    dispatch({ type: actions.post.DATA_FETCHING });
+
+    try {
+      const response = await api.post(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/posts`,
+        { formData }
+      );
+
+      if (response.status === 200) {
+        dispatch({ type: actions.post.DATA_CREATED, data: response.data });
+      }
+      // close this ui
+
+      onCreate()
+
+
+    } catch (error) {
+      console.error(error);
+      dispatch({ type: actions.post.DATA_FETCH_ERROR, error: error?.error });
+    }
   };
 
   return (

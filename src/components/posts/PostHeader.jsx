@@ -8,15 +8,38 @@ import TimeICon from "../../assets/icons/time.svg";
 // import { useProfile } from "../../hooks/useProfile";
 import { getDateDifferenceFromNow } from "../../utils";
 import { useAvatar } from "../../hooks/useAvatar";
+import { useAuth } from "../../hooks/useAuth";
+import { api } from "../../api";
+import { usePost } from "../../hooks/usePost";
+import { actions } from "../../actions";
 
 export default function PostHeader({ post }) {
-    const [showActions, setshowActions] = useState(false)
-    const { avatarURL } = useAvatar(post);
+  const [showActions, setshowActions] = useState(false);
+  const { avatarURL } = useAvatar(post);
+  const { auth } = useAuth();
+  const isMe = post?.author?.id == auth?.user?.id;
+  const { dispatch } = usePost();
 
+  function toggleAction() {
+    setshowActions(!showActions);
+  }
 
-    function toggleAction() {
-        setshowActions(!showActions)
+  const handleDeletePost = async () => {
+    dispatch({ type: actions.post.DATA_FETCHING });
+
+    try {
+      const response = await api.delete(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/posts/${post.id}`
+      );
+
+      if (response.status === 200) {
+        dispatch({ type: actions.post.POST_DELETED, data: post.id });
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch({ type: actions.post.DATA_FETCH_ERROR, error: error?.error });
     }
+  };
 
   return (
     <header className="flex items-center justify-between gap-4">
@@ -38,22 +61,27 @@ export default function PostHeader({ post }) {
       </div>
 
       <div className="relative">
-        <button onClick={toggleAction}>
-          <img src={ThreeDot} alt="3dots of Action" />
-        </button>
-        
-        {showActions &&
-            <div className="action-modal-container">
+        {isMe && (
+          <button onClick={toggleAction}>
+            <img src={ThreeDot} alt="3dots of Action" />
+          </button>
+        )}
+
+        {showActions && (
+          <div className="action-modal-container">
             <button className="action-menu-item hover:text-lwsGreen">
-                <img src={EditIcon} alt="Edit" />
-                Edit
+              <img src={EditIcon} alt="Edit" />
+              Edit
             </button>
-            <button className="action-menu-item hover:text-red-500">
-                <img src={DeleteIcon} alt="Delete" />
-                Delete
+            <button
+              onClick={handleDeletePost} // ← moved here
+              className="action-menu-item hover:text-red-500"
+            >
+              <img src={DeleteIcon} alt="Delete" />
+              Delete
             </button>
-            </div>
-        }
+          </div>
+        )}
       </div>
     </header>
   );
